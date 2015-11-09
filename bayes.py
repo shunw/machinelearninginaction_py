@@ -133,6 +133,8 @@ if __name__ == '__main__':
 	
 	# spamTest()
 	import feedparser
-	ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
-	test = ny['entries']
-	print len(test)
+	# ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
+	my = feedparser.parse('http://sfbay.craigslist.org/stp/index.rss')
+	# test = ny['entries']
+	# print len(test)
+	print my
