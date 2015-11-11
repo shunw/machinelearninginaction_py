@@ -37,8 +37,24 @@ def stocGradAscent0(dataMatrix, classLabels):
 		weights = weights+alpha*error*dataMatrix[i]
 	return weights
 
-def plotBestFit(wei):
-	weights = wei.getA()	# return self as an [ndarray] obeject.
+def stocGradAscent1(dataMatrix, classLabels, numIter=150):
+	m,n = shape(dataMatrix)
+	weights = ones(n)
+	for j in range(numIter):
+		dataIndex = range(m)
+		for i in range(m):
+			alpha = 1/(1.0+j+i)+.01
+			randIndex = int(random.uniform(0, len(dataIndex)))
+			h = sigmoid(sum(dataMatrix[randIndex]*weights))
+			error = classLabels[randIndex]-h
+			weights = weights+alpha*error*dataMatrix[randIndex]
+			del(dataIndex[randIndex])
+	return weights
+
+
+
+def plotBestFit(weights):
+	# weights = wei.getA()	# return self as an [ndarray] obeject.
 	dataMat, labelMat = loadDataSet()
 	dataArr = array(dataMat)
 	n = shape(dataArr)[0]	# get the row number
@@ -65,8 +81,22 @@ def plotBestFit(wei):
 
 
 if __name__ == '__main__':
-	dataArr, labelMat = loadDataSet()
-	weights = stocGradAscent0(array(dataArr), labelMat)
-	# print type(weights), type(weights.getA())
-	# print weights[0], weights[1]
-	plotBestFit(weights)
+	# dataArr, labelMat = loadDataSet()
+	
+	# weights = gradAscent(dataArr, labelMat)
+	# plotBestFit(weights.getA())
+
+	# weights = stocGradAscent0(array(dataArr), labelMat)
+	# plotBestFit(weights)
+
+	# weights = stocGradAscent1(array(dataArr), labelMat)
+	# plotBestFit(weights)
+	train_fl = 'horseColicTraining.txt'
+	test_fl = 'horseColicTest.txt'
+	handler = open(train_fl)
+	train_label = []; train_arr = []
+	
+	for lineArr in handler:
+		lineArr = line.strip().split()
+		dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
+		labelMat.append(int(lineArr[2]))
