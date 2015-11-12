@@ -78,6 +78,83 @@ def plotBestFit(weights):
 	plt.ylabel('X2')
 	plt.show()
 
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+def file_handler(filename):
+	# plotBestFit(weights)
+	# wendy's try
+	handler = open(filename)
+	train_label = []; train_arr = []; train_arr_item = []
+
+	# get the train_data
+	counter = 0
+	for line in handler:
+		lineArr = line.strip().split()
+		
+		for item_index in range(len(lineArr)-1):
+			# print train_arr_item
+			if item_index == 0:
+				train_arr_item.append(1.0)
+				train_arr_item.append(float(lineArr[item_index]))
+				continue
+			train_arr_item.append(float(lineArr[item_index]))
+			
+		train_arr.append(train_arr_item)
+		train_label.append(float(lineArr[-1]))
+		
+		# #control the number
+		# if counter > 10: break
+		# counter += 1
+
+		# #check each line
+		# go_sign = raw_input('to go, press "1"; to stop, press "0"')
+		# if go_sign == '1': 
+		# 	continue
+		# if go_sign == '0':	
+		# 	break
+	return train_arr, train_label
+
+def classifyVector(inX, weights):
+	prob = sigmoid(sum(inX*weights))
+	if prob > .5:
+		return 1.0
+	else: 
+		return 0.0
+
+def colicTest():
+	frTrain = open('horseColicTraining.txt')
+	frTest = open('horseColicTest.txt')
+	trainingSet = []; trainingLabels = []
+	for line in frTrain.readlines():
+		currLine = line.strip().split('\t')
+		lineArr = []
+		for i in range(21):
+			lineArr.append(float(currLine[i]))
+		trainingSet.append(lineArr)
+		trainingLabels.append(float(currLine[21]))
+	trainWeights = stocGradAscent1(array(trainingSet), trainingLabels, 500)
+	errorCount = 0; numTestVec = 0.0
+	for line in frTest.readlines():
+		numTestVec += 1.0
+		currLine = line.strip().split('\t')
+		lineArr = []
+		for i in range(21):
+			lineArr.append(float(currLine[i]))
+		if int(classifyVector(array(lineArr), trainWeights)) != int(currLine[21]):
+			errorCount += 1
+	errorRate = (float(errorCount)/numTestVec)
+	print 'the error rate of this test is: %f ' % errorRate
+	return errorRate
+
+def multiTest():
+	numTests = 10; errorSum = 0.0
+	for k in range(numTests):
+		errorSum += colicTest()
+	print 'after %d iterations the average error rate is: %f' %(numTests, errorSum/float(numTests))
 
 
 if __name__ == '__main__':
@@ -90,13 +167,16 @@ if __name__ == '__main__':
 	# plotBestFit(weights)
 
 	# weights = stocGradAscent1(array(dataArr), labelMat)
-	# plotBestFit(weights)
-	train_fl = 'horseColicTraining.txt'
-	test_fl = 'horseColicTest.txt'
-	handler = open(train_fl)
-	train_label = []; train_arr = []
+
+	# train_fl = 'horseColicTraining.txt'
+	# test_fl = 'horseColicTest.txt'
+
+	# wendy's try
+	# train_arr, train_label = file_handler(train_fl)
+	# weights = stocGradAscent1(array(train_arr), train_label)
+	# test_arr, test_label = file_handler(test_fl)
+
+	multiTest()
+
+
 	
-	for lineArr in handler:
-		lineArr = line.strip().split()
-		dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])
-		labelMat.append(int(lineArr[2]))
